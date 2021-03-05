@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "VSLauncher": {
+      "commandName": "Project",
+      "commandLineArgs": " C:\\Projects\\Auto.nl\\Louwman.Auto.Services.Car.CheckService"
+    }
+  }
+}

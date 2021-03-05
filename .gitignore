@@ -1,0 +1,6 @@
+/bin
+/obj
+/*.user
+/Visual Studio 2019
+/.vs
+/Properties/PublishProfiles/*.user
