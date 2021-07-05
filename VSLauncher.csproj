@@ -8,6 +8,8 @@
 	<PublishTrimmed>true</PublishTrimmed>
 	<PublishReadyToRun>true</PublishReadyToRun>
 	<IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+	<DebugType>None</DebugType>
+	<DebugSymbols>false</DebugSymbols>
     <ApplicationIcon>VSLauncher.ico</ApplicationIcon>
   </PropertyGroup>
 
