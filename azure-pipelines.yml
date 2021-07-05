@@ -1,0 +1,36 @@
+pool:
+  vmImage: 'windows-latest'
+
+trigger:
+  branches:
+    include:
+    - main
+    - feature/*
+
+name: 1.0.$(Build.BuildId)
+
+steps:
+steps:
+- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
+  displayName: 'Update assembly version'
+  inputs:
+    VersionNumber: '$(Build.BuildNumber)'
+    FileVersionNumber: '$(Build.BuildNumber)'
+    InformationalVersion: '$(Build.BuildNumber)'
+    PackageVersion: '$(Build.BuildNumber)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/*.csproj'
+    zipAfterPublish: false
+    modifyOutputPath: false
+    arguments: '--runtime win-x64 -c Release -o app /p:Version=$(Build.BuildNumber) -p:PublishTrimmed=true -p:TrimMode=Link /p:PublishSingleFile=true --self-contained --output $(Build.ArtifactStagingDirectory) --no-dependencies'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Build Artifacts'
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: '$(system.teamProject)'

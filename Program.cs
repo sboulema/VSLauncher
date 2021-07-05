@@ -23,21 +23,24 @@ namespace VSLauncher
                 return;
             }
 
-            var files = Directory.GetFiles(folder, "*.sln");
-            var sln = files.FirstOrDefault();
+            var filePaths = Directory.GetFiles(folder, "*.sln");
+            var solutionFilePath = filePaths.FirstOrDefault();
 
-            if (string.IsNullOrEmpty(sln))
+            if (string.IsNullOrEmpty(solutionFilePath))
             {
                 Console.WriteLine("Unable to find a VS solution!");
                 return;
             }
 
-            Console.WriteLine($"Opening {sln}");
+            // Fix any mixed path seperators
+            solutionFilePath = Path.GetFullPath(solutionFilePath);
 
-            OpenSln(sln);
+            Console.WriteLine($"Opening '{solutionFilePath}'");
+
+            OpenVisualStudioSolution(solutionFilePath);
         }
 
-        private static bool OpenSln(string path)
+        private static bool OpenVisualStudioSolution(string path)
             => new Process
             {
                 StartInfo = new()
