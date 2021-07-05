@@ -25,6 +25,12 @@ stages:
         modifyOutputPath: false
         arguments: '-r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64 -p:Version=$(Build.BuildNumber)' 
 
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifacts'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: '$(system.teamProject)'   
+
 - stage: Build_winx86
   displayName: 'Build win-x86'
   dependsOn: []
@@ -40,6 +46,12 @@ stages:
         zipAfterPublish: false
         modifyOutputPath: false
         arguments: '-r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86 -p:Version=$(Build.BuildNumber)'
+
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifacts'
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: '$(system.teamProject)'   
 
 - stage: Build_osxx64
   displayName: 'Build osx-x64'
@@ -57,23 +69,18 @@ stages:
         modifyOutputPath: false
         arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64 -p:PublishReadyToRun=false -p:Version=$(Build.BuildNumber)'
 
-- stage: PublishArtifacts
-  displayName: 'Publish Artifacts'
-  dependsOn:
-    - Build_winx64
-    - Build_winx86
-    - Build_osxx64
-  jobs:
-  - job: Build
-    steps:
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifacts'
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: '$(system.teamProject)'        
+        artifactName: '$(system.teamProject)'
 
 - stage: CreateGitHubRelease
   displayName: Create GitHub Release
+  dependsOn:
+    - Build_winx64
+    - Build_winx86
+    - Build_osxx64
   jobs:
   - job: Release
     steps:

@@ -10,7 +10,7 @@ To use VSLauncher to quickly open a Visual Studio solution using Repoz edit the 
 ```
 {
     "name": "{OpenIn} Visual Studio",
-    "executables": [ 'C:/Repos/VSLauncher/bin/Release/net5.0/publish/VSLauncher.exe' ],
+    "executables": [ '<path to VSLauncher>/VSLauncher.exe' ],
     "arguments": '"{Repository.SafePath}"',  
     "active": "true"
 },
