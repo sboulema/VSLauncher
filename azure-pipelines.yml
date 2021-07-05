@@ -23,13 +23,20 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64 -p:Version=$(Build.BuildNumber)' 
+        arguments: '-r win-x64 --output $(Build.ArtifactStagingDirectory) -p:Version=$(Build.BuildNumber)'
+
+    - task: PowerShell@2
+      displayName: 'Rename Build Artifacts'
+      inputs:
+        targetType: 'inline'
+        script: 'Get-ChildItem ./VSLauncher.exe | Rename-Item -NewName {$_.basename + "_x64" + $_.extension }'
+        workingDirectory: '$(Build.ArtifactStagingDirectory)'
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifacts'
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: '$(system.teamProject)'   
+        artifactName: 'win-x64'   
 
 - stage: Build_winx86
   displayName: 'Build win-x86'
@@ -45,13 +52,20 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86 -p:Version=$(Build.BuildNumber)'
+        arguments: '-r win-x86 --output $(Build.ArtifactStagingDirectory) -p:Version=$(Build.BuildNumber)'
+
+    - task: PowerShell@2
+      displayName: 'Rename Build Artifacts'
+      inputs:
+        targetType: 'inline'
+        script: 'Get-ChildItem ./VSLauncher.exe | Rename-Item -NewName {$_.basename + "_x86" + $_.extension }'
+        workingDirectory: '$(Build.ArtifactStagingDirectory)'
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifacts'
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: '$(system.teamProject)'   
+        artifactName: 'win-x86'   
 
 - stage: Build_osxx64
   displayName: 'Build osx-x64'
@@ -67,13 +81,13 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64 -p:PublishReadyToRun=false -p:Version=$(Build.BuildNumber)'
+        arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory) -p:PublishReadyToRun=false -p:Version=$(Build.BuildNumber)'
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifacts'
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: '$(system.teamProject)'
+        artifactName: 'osx-x64'
 
 - stage: CreateGitHubRelease
   displayName: Create GitHub Release
