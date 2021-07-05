@@ -110,8 +110,7 @@ stages:
     - task: DownloadPipelineArtifact@2
       displayName: 'Download Pipeline Artifact'
       inputs:
-        #path: $(Pipeline.Workspace)
-        path: $(Build.ArtifactStagingDirectory)
+        path: $(Pipeline.Workspace)
 
     - task: GitHubRelease@1
       displayName: 'Create GitHub Release'
@@ -120,6 +119,6 @@ stages:
         repositoryName: sboulema/VSLauncher
         action: Create
         title: 'v$(Build.BuildNumber)'
-        #assets: '$(Pipeline.Workspace)/**/VSLauncher*'
+        assets: '$(Pipeline.Workspace)/**/VSLauncher*'
         tagSource: 'userSpecifiedTag'
         tag: $(Build.BuildNumber)
