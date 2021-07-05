@@ -9,27 +9,65 @@ trigger:
 
 name: 1.0.$(Build.BuildId)
 
-steps:
-- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
-  displayName: 'Update assembly version'
-  inputs:
-    VersionNumber: '$(Build.BuildNumber)'
-    FileVersionNumber: '$(Build.BuildNumber)'
-    InformationalVersion: '$(Build.BuildNumber)'
-    PackageVersion: '$(Build.BuildNumber)'
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    steps:
+    - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
+      displayName: 'Update assembly version'
+      inputs:
+        VersionNumber: '$(Build.BuildNumber)'
+        FileVersionNumber: '$(Build.BuildNumber)'
+        InformationalVersion: '$(Build.BuildNumber)'
+        PackageVersion: '$(Build.BuildNumber)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Publish'
-  inputs:
-    command: publish
-    publishWebProjects: false
-    projects: '**/*.csproj'
-    zipAfterPublish: false
-    modifyOutputPath: false
-    arguments: '--runtime win-x64 -c Release -o app /p:Version=$(Build.BuildNumber) -p:PublishTrimmed=true -p:TrimMode=Link /p:PublishSingleFile=true --self-contained --output $(Build.ArtifactStagingDirectory) --no-dependencies'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish win-x64'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: '$(system.teamProject).csproj'
+        zipAfterPublish: false
+        modifyOutputPath: false
+        arguments: '-c Release -r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64'
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Build Artifacts'
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-    artifactName: '$(system.teamProject)'
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish win-x86'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: '$(system.teamProject).csproj'
+        zipAfterPublish: false
+        modifyOutputPath: false
+        arguments: '-c Release -r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Build Artifacts'
+      inputs:
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: '$(system.teamProject)'
+
+- stage: CreateGitHubRelease
+  displayName: Create GitHub Release
+  jobs:
+  - job: Release
+    steps:
+    - checkout: none
+
+    - task: DownloadPipelineArtifact@2
+      displayName: 'Download Pipeline Artifact'
+      inputs:
+        artifact: '$(system.teamProject)'
+        path: $(Pipeline.Workspace)
+
+    - task: GitHubRelease@1
+      displayName: 'Create GitHub Release'
+      inputs:
+        gitHubConnection: 'GitHub Release'
+        repositoryName: sboulema/VSLauncher
+        action: Create
+        title: 'v$(Build.BuildNumber)'
+        assets: '$(Pipeline.Workspace)/*.exe'
+        tagSource: 'userSpecifiedTag'
+        tag: $(Build.BuildNumber)
