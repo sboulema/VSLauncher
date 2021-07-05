@@ -14,13 +14,13 @@ stages:
   jobs:
   - job: Build
     steps:
-    - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
-      displayName: 'Update assembly version'
-      inputs:
-        VersionNumber: '$(Build.BuildNumber)'
-        FileVersionNumber: '$(Build.BuildNumber)'
-        InformationalVersion: '$(Build.BuildNumber)'
-        PackageVersion: '$(Build.BuildNumber)'
+    #- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
+    #  displayName: 'Update assembly version'
+    #  inputs:
+    #    VersionNumber: '$(Build.BuildNumber)'
+    #    FileVersionNumber: '$(Build.BuildNumber)'
+    #    InformationalVersion: '$(Build.BuildNumber)'
+    #    PackageVersion: '$(Build.BuildNumber)'
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish win-x64'
@@ -30,7 +30,7 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64'
+        arguments: '-c Release -r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64' -p:Version=$(Build.BuildNumber)
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish win-x86'
@@ -40,23 +40,23 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86'
+        arguments: '-c Release -r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86' -p:Version=$(Build.BuildNumber)
 
     - task: DotNetCoreCLI@2
-      displayName: 'Publish osx-64'
+      displayName: 'Publish osx-x64'
       inputs:
         command: publish
         publishWebProjects: false
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r osx-64 --output $(Build.ArtifactStagingDirectory)/osx-64'
+        arguments: '-c Release -r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64' -p:Version=$(Build.BuildNumber)
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Build Artifacts'
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish Pipeline Artifacts'
       inputs:
-        pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-        artifactName: '$(system.teamProject)'
+        targetPath: '$(Build.ArtifactStagingDirectory)' 
+        artifactName: '$(system.teamProject)'        
 
 - stage: CreateGitHubRelease
   displayName: Create GitHub Release
@@ -78,6 +78,6 @@ stages:
         repositoryName: sboulema/VSLauncher
         action: Create
         title: 'v$(Build.BuildNumber)'
-        assets: '$(Pipeline.Workspace)/*.exe'
+        assets: '$(Pipeline.Workspace)/**/*.exe'
         tagSource: 'userSpecifiedTag'
         tag: $(Build.BuildNumber)
