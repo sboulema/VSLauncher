@@ -14,43 +14,38 @@ stages:
   jobs:
   - job: Build
     steps:
-    #- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
-    #  displayName: 'Update assembly version'
-    #  inputs:
-    #    VersionNumber: '$(Build.BuildNumber)'
-    #    FileVersionNumber: '$(Build.BuildNumber)'
-    #    InformationalVersion: '$(Build.BuildNumber)'
-    #    PackageVersion: '$(Build.BuildNumber)'
-
     - task: DotNetCoreCLI@2
       displayName: 'Publish win-x64'
+      dependsOn: []
       inputs:
         command: publish
         publishWebProjects: false
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64 -p:Version=$(Build.BuildNumber)' 
+        arguments: '-r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64 -p:Version=$(Build.BuildNumber)' 
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish win-x86'
+      dependsOn: []
       inputs:
         command: publish
         publishWebProjects: false
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86 -p:Version=$(Build.BuildNumber)'
+        arguments: '-r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86 -p:Version=$(Build.BuildNumber)'
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish osx-x64'
+      dependsOn: []
       inputs:
         command: publish
         publishWebProjects: false
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64 -p:Version=$(Build.BuildNumber)'
+        arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64 -p:Version=$(Build.BuildNumber)'
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifacts'
