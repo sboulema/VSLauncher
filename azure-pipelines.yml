@@ -10,7 +10,7 @@ trigger:
 name: 1.0.$(Build.BuildId)
 
 stages:
-- stage: Build-win-x64
+- stage: Build_winx64
   displayName: 'Build win-x64'
   jobs:
   - job: Build
@@ -25,7 +25,7 @@ stages:
         modifyOutputPath: false
         arguments: '-r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64 -p:Version=$(Build.BuildNumber)' 
 
-- stage: Build-win-x86
+- stage: Build_winx86
   displayName: 'Build win-x86'
   dependsOn: []
   jobs:
@@ -41,7 +41,7 @@ stages:
         modifyOutputPath: false
         arguments: '-r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86 -p:Version=$(Build.BuildNumber)'
 
-- stage: Build-osx-x64
+- stage: Build_osxx64
   displayName: 'Build osx-x64'
   dependsOn: []
   jobs:
@@ -60,9 +60,9 @@ stages:
 - stage: PublishArtifacts
   displayName: 'Publish Artifacts'
   dependsOn:
-    - Build-win-x64
-    - Build-win-x86
-    - Build-osx-x64
+    - Build_winx64
+    - Build_winx86
+    - Build_osxx64
   jobs:
   - job: Build
     steps:
