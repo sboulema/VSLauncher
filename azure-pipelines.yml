@@ -30,7 +30,7 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64' -p:Version=$(Build.BuildNumber)
+        arguments: '-c Release -r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64 -p:Version=$(Build.BuildNumber)' 
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish win-x86'
@@ -40,7 +40,7 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86' -p:Version=$(Build.BuildNumber)
+        arguments: '-c Release -r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86 -p:Version=$(Build.BuildNumber)'
 
     - task: DotNetCoreCLI@2
       displayName: 'Publish osx-x64'
@@ -50,7 +50,7 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-c Release -r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64' -p:Version=$(Build.BuildNumber)
+        arguments: '-c Release -r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64 -p:Version=$(Build.BuildNumber)'
 
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifacts'
