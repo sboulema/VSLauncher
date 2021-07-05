@@ -55,7 +55,7 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64 -p:Version=$(Build.BuildNumber)'
+        arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64 -p:PublishReadyToRun=false -p:Version=$(Build.BuildNumber)'
 
 - stage: PublishArtifacts
   displayName: 'Publish Artifacts'
