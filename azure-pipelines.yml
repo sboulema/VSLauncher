@@ -42,6 +42,16 @@ stages:
         modifyOutputPath: false
         arguments: '-c Release -r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86'
 
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish osx-64'
+      inputs:
+        command: publish
+        publishWebProjects: false
+        projects: '$(system.teamProject).csproj'
+        zipAfterPublish: false
+        modifyOutputPath: false
+        arguments: '-c Release -r osx-64 --output $(Build.ArtifactStagingDirectory)/osx-64'
+
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Build Artifacts'
       inputs:
