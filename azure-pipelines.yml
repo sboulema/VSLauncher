@@ -10,13 +10,13 @@ trigger:
 name: 1.0.$(Build.BuildId)
 
 stages:
-- stage: Build
+- stage: Build-win-x64
+  displayName: 'Build win-x64'
   jobs:
   - job: Build
     steps:
     - task: DotNetCoreCLI@2
       displayName: 'Publish win-x64'
-      dependsOn: []
       inputs:
         command: publish
         publishWebProjects: false
@@ -25,6 +25,12 @@ stages:
         modifyOutputPath: false
         arguments: '-r win-x64 --output $(Build.ArtifactStagingDirectory)/win-x64 -p:Version=$(Build.BuildNumber)' 
 
+- stage: Build-win-x86
+  displayName: 'Build win-x86'
+  dependsOn: []
+  jobs:
+  - job: Build
+    steps:
     - task: DotNetCoreCLI@2
       displayName: 'Publish win-x86'
       dependsOn: []
@@ -36,6 +42,12 @@ stages:
         modifyOutputPath: false
         arguments: '-r win-x86 --output $(Build.ArtifactStagingDirectory)/win-x86 -p:Version=$(Build.BuildNumber)'
 
+- stage: Build-osx-x64
+  displayName: 'Build osx-x64'
+  dependsOn: []
+  jobs:
+  - job: Build
+    steps:
     - task: DotNetCoreCLI@2
       displayName: 'Publish osx-x64'
       dependsOn: []
@@ -47,6 +59,15 @@ stages:
         modifyOutputPath: false
         arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory)/osx-x64 -p:Version=$(Build.BuildNumber)'
 
+- stage: PublishArtifacts
+  displayName: 'Publish Artifacts'
+  dependsOn:
+    - Build-win-x64
+    - Build-win-x86
+    - Build-osx-x64
+  jobs:
+  - job: Build
+    steps:
     - task: PublishPipelineArtifact@1
       displayName: 'Publish Pipeline Artifacts'
       inputs:
