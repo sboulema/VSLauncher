@@ -10,7 +10,6 @@ trigger:
 name: 1.0.$(Build.BuildId)
 
 steps:
-steps:
 - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
   displayName: 'Update assembly version'
   inputs:

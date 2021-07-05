@@ -1,5 +1,5 @@
 # VSLauncher 
-Simple Visual Studio launcher designed to worj with RepoZ
+Simple Visual Studio launcher designed to work with [RepoZ](https://github.com/awaescher/RepoZ)
 
 [![Build Status](https://dev.azure.com/sboulema/CodeNav/_apis/build/status/CodeNav?branchName=main)](https://dev.azure.com/sboulema/CodeNav/_build/latest?definitionId=26&branchName=main)
 [![Sponsor](https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors)](https://github.com/sponsors/sboulema)
@@ -15,3 +15,5 @@ To use VSLauncher to quickly open a Visual Studio solution using Repoz edit the 
     "active": "true"
 },
 ```
+
+Read more about custom repository actions at the [RepoZ Community Repository Actions GitHub](https://github.com/awaescher/RepoZ-RepositoryActions).
