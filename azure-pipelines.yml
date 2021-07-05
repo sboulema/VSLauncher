@@ -23,7 +23,7 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-r win-x64 --output $(Build.ArtifactStagingDirectory) --no-restore -p:Version=$(Build.BuildNumber)'
+        arguments: '-r win-x64 --output $(Build.ArtifactStagingDirectory) -p:Version=$(Build.BuildNumber)'
 
     - task: PowerShell@2
       displayName: 'Rename Build Artifacts'
@@ -52,7 +52,7 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-r win-x86 --output $(Build.ArtifactStagingDirectory) --no-restore -p:Version=$(Build.BuildNumber)'
+        arguments: '-r win-x86 --output $(Build.ArtifactStagingDirectory) -p:Version=$(Build.BuildNumber)'
 
     - task: PowerShell@2
       displayName: 'Rename Build Artifacts'
@@ -81,7 +81,7 @@ stages:
         projects: '$(system.teamProject).csproj'
         zipAfterPublish: false
         modifyOutputPath: false
-        arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory) --no-restore -p:PublishReadyToRun=false -p:Version=$(Build.BuildNumber)'
+        arguments: '-r osx-x64 --output $(Build.ArtifactStagingDirectory) -p:PublishReadyToRun=false -p:Version=$(Build.BuildNumber)'
 
     - task: PowerShell@2
       displayName: 'Rename Build Artifacts'
