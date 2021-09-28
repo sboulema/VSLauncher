@@ -5,7 +5,7 @@ Simple Visual Studio launcher designed to work with [RepoZ](https://github.com/a
 [![Sponsor](https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors)](https://github.com/sponsors/sboulema)
 
 ## Usage
-To use VSLauncher to quickly open a Visual Studio solution using Repoz edit the RepositoryActions.json file, by adding the follow json block to the `repository-actions` array
+To use VSLauncher to quickly open a Visual Studio solution using Repoz edit the RepositoryActions.json file, by adding the following json block to the `repository-actions` array
 
 ```
 {
