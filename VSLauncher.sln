@@ -7,8 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSLauncher", "VSLauncher.cs
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AD51CB4F-ED4A-4790-A038-886513FF02FC}"
 	ProjectSection(SolutionItems) = preProject
-		azure-pipelines.yml = azure-pipelines.yml
 		README.md = README.md
+		.github\workflows\workflow.yml = .github\workflows\workflow.yml
 	EndProjectSection
 EndProject
 Global

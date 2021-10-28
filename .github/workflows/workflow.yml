@@ -1,0 +1,107 @@
+name: VSLauncher
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+
+env:
+  version: '1.1.${{ github.run_number }}'
+  repoUrl: ${{ github.server_url }}/${{ github.repository }}
+
+jobs:
+  build_winx64:
+    name: Build_winx64
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.x
+
+      - name: Publish application
+        run: dotnet publish "." -r win-x64 --output x64 -p:Version=${{ env.version }}
+
+      - name: Rename Build Artifacts
+        run: Get-ChildItem ./x64/VSLauncher.exe | Rename-Item -NewName {$_.basename + "_x64" + $_.extension }
+
+      - name: Publish Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: win-x64
+          path: "./x64"
+
+  build_winx86:
+    name: Build_winx86
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.x
+
+      - name: Publish application
+        run: dotnet publish "." -r win-x86 --output x86 -p:Version=${{ env.version }}
+
+      - name: Rename Build Artifacts
+        run: Get-ChildItem ./x86/VSLauncher.exe | Rename-Item -NewName {$_.basename + "_x86" + $_.extension }
+
+      - name: Publish Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: win-x86
+          path: "./x86"
+
+  build_osxx64:
+    name: Build_osxx64
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.x
+
+      - name: Publish application
+        run: dotnet publish "." -r osx-x64 --output osx-x64 -p:Version=${{ env.version }}
+
+      - name: Rename Build Artifacts
+        run: Get-ChildItem ./osx-x64/VSLauncher.exe | Rename-Item -NewName {$_.basename + "_osx-x64" + $_.extension }
+
+      - name: Publish Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: osx-x64
+          path: "./osx-x64"
+
+  release:
+    name: Release
+    needs: [build_winx64, build_winx86, build_osxx64]
+    runs-on: windows-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+
+      - name: Tag release
+        id: tag_release
+        uses: mathieudutour/github-tag-action@v5.6
+        with:
+          custom_tag: '${{ env.version }}'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create a GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.tag_release.outputs.new_tag }}
+          name: ${{ steps.tag_release.outputs.new_tag }}
+          body: ${{ steps.tag_release.outputs.changelog }}
+          artifacts: "**/VSLauncher*"
