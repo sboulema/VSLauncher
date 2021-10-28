@@ -75,7 +75,7 @@ jobs:
         run: dotnet publish "." -r osx-x64 --output osx-x64 -p:PublishReadyToRun=false -p:Version=${{ env.version }}
 
       - name: Rename Build Artifacts
-        run: Get-ChildItem ./osx-x64/VSLauncher.exe | Rename-Item -NewName {$_.basename + "_osx-x64" + $_.extension }
+        run: Get-ChildItem ./osx-x64/VSLauncher | Rename-Item -NewName {$_.basename + "_osx-x64" + $_.extension }
 
       - name: Publish Build Artifacts
         uses: actions/upload-artifact@v2
