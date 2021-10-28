@@ -1,7 +1,7 @@
 # VSLauncher 
 Simple Visual Studio launcher designed to work with [RepoZ](https://github.com/awaescher/RepoZ)
 
-[![Build Status](https://dev.azure.com/sboulema/VSLauncher/_apis/build/status/VSLauncher?branchName=main)](https://dev.azure.com/sboulema/VSLauncher/_build/latest?definitionId=28&branchName=main)
+[![VSLauncher](https://github.com/sboulema/VSLauncher/actions/workflows/workflow.yml/badge.svg)](https://github.com/sboulema/VSLauncher/actions/workflows/workflow.yml)
 [![Sponsor](https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors)](https://github.com/sponsors/sboulema)
 
 ## Usage
