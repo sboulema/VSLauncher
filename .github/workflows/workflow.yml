@@ -72,7 +72,7 @@ jobs:
           dotnet-version: 5.x
 
       - name: Publish application
-        run: dotnet publish "." -r osx-x64 --output osx-x64 -p:Version=${{ env.version }}
+        run: dotnet publish "." -r osx-x64 --output osx-x64 -p:PublishReadyToRun=false -p:Version=${{ env.version }}
 
       - name: Rename Build Artifacts
         run: Get-ChildItem ./osx-x64/VSLauncher.exe | Rename-Item -NewName {$_.basename + "_osx-x64" + $_.extension }
