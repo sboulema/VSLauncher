@@ -9,6 +9,7 @@
 	  <PublishReadyToRun>true</PublishReadyToRun>
 	  <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 	  <DebugType>None</DebugType>
 	  <DebugSymbols>false</DebugSymbols>
     <ApplicationIcon>VSLauncher.ico</ApplicationIcon>
