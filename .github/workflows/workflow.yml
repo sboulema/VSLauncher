@@ -7,8 +7,9 @@ on:
       - 'feature/**'
 
 env:
-  version: '1.2.${{ github.run_number }}'
+  version: '1.3.${{ github.run_number }}'
   repoUrl: ${{ github.server_url }}/${{ github.repository }}
+  dotnetVersion: '7'
 
 jobs:
   build_winx64:
@@ -21,7 +22,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.x
+          dotnet-version: ${{ env.dotnetVersion }}.x
 
       - name: Publish application
         run: dotnet publish "." --runtime win-x64 --self-contained --output x64 -p:Version=${{ env.version }}
@@ -45,7 +46,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.x
+          dotnet-version: ${{ env.dotnetVersion }}.x
 
       - name: Publish application
         run: dotnet publish "." --runtime win-x86 --self-contained --output x86 -p:Version=${{ env.version }}
@@ -69,7 +70,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.x
+          dotnet-version: ${{ env.dotnetVersion }}.x
 
       - name: Publish application
         run: dotnet publish "." --runtime osx-x64 --self-contained --output osx-x64 -p:PublishReadyToRun=false -p:Version=${{ env.version }}
