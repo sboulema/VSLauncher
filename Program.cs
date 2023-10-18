@@ -3,41 +3,93 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-var folder = args.FirstOrDefault();
+const string _vswhereFilePath = "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe";
 
-if (string.IsNullOrEmpty(folder))
+var directory = args.FirstOrDefault();
+
+if (string.IsNullOrEmpty(directory))
 {
     Console.WriteLine("Folder path must be specified!");
     return;
 }
 
-if (!Directory.Exists(folder))
+if (!Directory.Exists(directory))
 {
     Console.WriteLine("Unable to find specified directory!");
     return;
 }
 
-var solutionFilePath = Directory
-    .GetFiles(folder, "*.sln")
-    .FirstOrDefault();
+var filePath = GetFilePath(directory, "*.sln");
 
-if (string.IsNullOrEmpty(solutionFilePath))
+if (!string.IsNullOrEmpty(filePath))
 {
-    Console.WriteLine("Unable to find a VS solution!");
+    Console.WriteLine($"Opening solution '{filePath}'");
+    Run(filePath, true);
     return;
 }
 
-// Fix any mixed path seperators
-solutionFilePath = Path.GetFullPath(solutionFilePath);
+var vsPath = RunWithResults(_vswhereFilePath, "-prerelease -latest -property productPath");
 
-Console.WriteLine($"Opening '{solutionFilePath}'");
+filePath = GetFilePath(directory, "*.*proj");
 
-new Process
+if (!string.IsNullOrEmpty(filePath))
 {
-    StartInfo = new()
+    Console.WriteLine($"Opening project '{filePath}'");
+    Run(vsPath, arguments: filePath);
+    return;
+}
+
+Console.WriteLine($"Opening directory '{directory}'");
+Run(vsPath, arguments: directory);
+
+static bool Run(string filePath, bool useShellExecute = false, string arguments = "")
+    => new Process
     {
-        FileName = solutionFilePath,
-        UseShellExecute = true,
-        CreateNoWindow = true
+        StartInfo = new()
+        {
+            FileName = filePath,
+            Arguments = arguments,
+            UseShellExecute = useShellExecute,
+            CreateNoWindow = true
+        }
+    }.Start();
+
+static string RunWithResults(string filePath, string arguments)
+{
+    var process = new Process
+    {
+        StartInfo = new()
+        {
+            FileName = filePath,
+            Arguments = arguments,
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            CreateNoWindow = true
+        }
+    };
+
+    process.Start();
+
+    string output = string.Empty;
+
+    while (!process.StandardOutput.EndOfStream)
+    {
+        output += process.StandardOutput.ReadLine();
     }
-}.Start();
+
+    return output;
+}
+
+static string GetFilePath(string directory, string searchPattern)
+{
+    var filePath = Directory
+        .EnumerateFiles(directory, searchPattern)
+        .FirstOrDefault();
+
+    if (string.IsNullOrEmpty(filePath))
+    {
+        return string.Empty;
+    }
+
+    return Path.GetFullPath(filePath);
+}
