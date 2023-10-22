@@ -14,9 +14,12 @@ Simple Visual Studio launcher designed to work with [RepoZ](https://github.com/a
 ### CLI
 `VSLauncher.exe <directory> [options]`
 
-| Name      | Parameter | Required | Example             | Description |
-| --------- | --------- | -------- | ------------------- | ----------- |
-| Directory |           | yes      | D:\Repos\VSLauncher | Directory in which to open solution/project/directory
+| Name       | Parameter        | Required | Example             | Description |
+| ---------  | ---------------- | -------- | ------------------- | ----------- |
+| Directory  |                  | yes      | D:\Repos\VSLauncher | Directory in which to open solution/project/directory |
+| Version    | --vs-version, -v | no       | 2017, 2019, 2022    | The version of Visual Studio to launch |
+| Prerelease | --prerelease, -p | no       |                     | The release channel of Visual Studio to launch |
+| Help       | --help, -h, -?   | no       |                     | Show help |
 
 ### RepoZ
 To use VSLauncher to quickly open a Visual Studio solution using RepoZ edit the RepositoryActions.json file, by adding the following json block to the `repository-actions` array
