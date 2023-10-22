@@ -2,7 +2,7 @@
   "profiles": {
     "VSLauncher": {
       "commandName": "Project",
-      "commandLineArgs": "D:/Repos/TSVN.Gladstone -v 2022 -p"
+      "commandLineArgs": "D:/Repos/TSVN.Gladstone -i"
     }
   }
 }

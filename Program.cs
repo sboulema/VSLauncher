@@ -1,28 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
+using VSLauncher.Models;
 
 var directoryArgument = new Argument<string>("directory", "Directory in which to open solution/project/directory.");
 var versionOption = new Option<string?>(new[] { "--vs-version", "-v" }, "The version of Visual Studio to launch.");
 var prereleaseOption = new Option<bool>(new[] { "--prerelease", "-p" }, "The release channel of Visual Studio to launch.");
+var interactiveOption = new Option<bool>(new[] { "--interactive", "-i" }, "Interactively choose which version of Visual Studio to launch.");
 
 var rootCommand = new RootCommand("Visual Studio Launcher")
 { 
     directoryArgument,
     versionOption,
-    prereleaseOption
+    prereleaseOption,
+    interactiveOption
 };
 
 rootCommand.SetHandler(LaunchVisualStudio,
     directoryArgument,
     versionOption,
-    prereleaseOption);
+    prereleaseOption,
+    interactiveOption);
 
 return await rootCommand.InvokeAsync(args);
 
-static void LaunchVisualStudio(string directory, string? vsVersion, bool prerelease)
+static void LaunchVisualStudio(string directory, string? vsVersion,
+    bool prerelease, bool interactive)
 {
     if (!Directory.Exists(directory))
     {
@@ -32,7 +41,7 @@ static void LaunchVisualStudio(string directory, string? vsVersion, bool prerele
 
     var filePath = GetFilePath(directory, "*.sln");
 
-    var vsPath = GetVisualStudioPath(vsVersion, prerelease);
+    var vsPath = GetVisualStudioPath(vsVersion, prerelease, interactive);
 
     if (string.IsNullOrEmpty(vsPath))
     {
@@ -72,8 +81,30 @@ static bool Run(string vsPath, string arguments)
         }
     }.Start();
 
-static string GetVisualStudioPath(string? vsVersion, bool prerelease)
+static string GetVisualStudioPath(string? vsVersion, bool prerelease, bool interactive)
 {
+    if (interactive)
+    {
+        var vsInstallations = RunVisualStudioLocator("-prerelease");
+
+        Console.WriteLine("Visual Studio Launcher");
+        Console.WriteLine("Please select which installation of Visual Studio to launch");
+
+        for (int i = 0; i < vsInstallations.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}: {vsInstallations[i].DisplayName} ({vsInstallations[i].Catalog.ProductDisplayVersion})");
+        }
+
+        var indexString = Console.ReadLine();
+
+        if (int.TryParse(indexString, out var index) == false)
+        {
+            return string.Empty;
+        }
+
+        return vsInstallations[index - 1].ProductPath;
+    }
+
     var versionArgument = vsVersion switch
     {
         "2017" => "-version [15,16)",
@@ -84,12 +115,18 @@ static string GetVisualStudioPath(string? vsVersion, bool prerelease)
 
     var arguments = $"{(prerelease ? "-prerelease": string.Empty)} {versionArgument} -property productPath";
 
+    return RunVisualStudioLocator(arguments)
+        .FirstOrDefault()?.ProductPath ?? string.Empty;
+}
+
+static List<VisualStudio> RunVisualStudioLocator(string arguments)
+{
     var process = new Process
     {
         StartInfo = new()
         {
             FileName = "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
-            Arguments = arguments,
+            Arguments = arguments += " -format json",
             UseShellExecute = false,
             RedirectStandardOutput = true,
             CreateNoWindow = true
@@ -105,7 +142,7 @@ static string GetVisualStudioPath(string? vsVersion, bool prerelease)
         output += process.StandardOutput.ReadLine();
     }
 
-    return output;
+    return JsonSerializer.Deserialize(output, SourceGenerationContext.Default.ListVisualStudio) ?? new();
 }
 
 static string GetFilePath(string directory, string searchPattern)
@@ -121,3 +158,6 @@ static string GetFilePath(string directory, string searchPattern)
 
     return Path.GetFullPath(filePath);
 }
+
+[JsonSerializable(typeof(List<VisualStudio>))]
+internal partial class SourceGenerationContext : JsonSerializerContext { }
