@@ -34,6 +34,17 @@ To use VSLauncher to quickly open a Visual Studio solution using RepoZ edit the 
 },
 ```
 
+No permissions to run an unsigned executable? You can setup a basic version of VSLauncher using Powershell
+
+```
+{
+    "name": "{OpenIn} Visual Studio",
+    "command": 'pwsh',
+    "arguments": '-workingdirectory "{Repository.SafePath}" -command "Join-Path -Path . -ChildPath *.sln | Invoke-Item"',
+    "active": "true"
+},
+```
+
 Read more about custom repository actions at the [RepoZ Community Repository Actions GitHub](https://github.com/awaescher/RepoZ-RepositoryActions).
 
 ## Links
