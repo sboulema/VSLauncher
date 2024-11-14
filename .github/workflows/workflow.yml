@@ -7,9 +7,9 @@ on:
       - 'feature/**'
 
 env:
-  version: '2.1.${{ github.run_number }}'
+  version: '2.2.${{ github.run_number }}'
   repoUrl: ${{ github.server_url }}/${{ github.repository }}
-  dotnetVersion: '8'
+  dotnetVersion: '9'
 
 jobs:
   build_winx64:
