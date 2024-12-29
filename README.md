@@ -1,11 +1,11 @@
-# VSLauncher 
-Simple Visual Studio launcher designed to work with [RepoZ](https://github.com/awaescher/RepoZ)
+# VSLauncher
+Simple Visual Studio launcher designed to work with [RepoZ](https://github.com/awaescher/RepoZ) or [GitHub Desktop](https://github.com/apps/desktop)
 
 [![VSLauncher](https://github.com/sboulema/VSLauncher/actions/workflows/workflow.yml/badge.svg)](https://github.com/sboulema/VSLauncher/actions/workflows/workflow.yml)
 [![Sponsor](https://img.shields.io/badge/-Sponsor-fafbfc?logo=GitHub%20Sponsors)](https://github.com/sponsors/sboulema)
 
 ## Features
-- Open a solution file from the specified directory in Visual Studio 
+- Open a solution file from the specified directory in Visual Studio
 - Open a project file from the specified directory in Visual Studio
 - Open the specified directory in Visual Studio
 
@@ -20,6 +20,7 @@ Simple Visual Studio launcher designed to work with [RepoZ](https://github.com/a
 | Version     | --vs-version, -v  | no       | 2017, 2019, 2022    | The version of Visual Studio to launch |
 | Prerelease  | --prerelease, -p  | no       |                     | The release channel of Visual Studio to launch |
 | Interactive | --interactive, -i | no       |                     | Interactively choose which version of Visual Studio to launch |
+| Recursive   | --recursive, -r   | no       |                     | Recursively search for a solution or project in the given directory and its children |
 | Help        | --help, -h, -?    | no       |                     | Show help |
 
 ### RepoZ
@@ -29,7 +30,7 @@ To use VSLauncher to quickly open a Visual Studio solution using RepoZ edit the 
 {
     "name": "{OpenIn} Visual Studio",
     "executables": [ '<path to VSLauncher>/VSLauncher.exe' ],
-    "arguments": '"{Repository.SafePath}"',  
+    "arguments": '"{Repository.SafePath}"',
     "active": "true"
 },
 ```
