@@ -49,7 +49,7 @@ static void LaunchVisualStudio(string directory, string? vsVersion,
 		return;
 	}
 
-	var filePath = GetFilePath(directory, "*.sln", recursive);
+	var filePath = GetFilePath(directory, "*.sln?", recursive);
 
 	if (!string.IsNullOrEmpty(filePath))
 	{

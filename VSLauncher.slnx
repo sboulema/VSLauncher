@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".github/workflows/workflow.yml" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="VSLauncher.csproj" />
+</Solution>
