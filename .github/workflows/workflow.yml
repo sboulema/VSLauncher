@@ -7,9 +7,9 @@ on:
       - 'feature/**'
 
 env:
-  version: '2.3.${{ github.run_number }}'
+  version: '2.4.${{ github.run_number }}'
   repoUrl: ${{ github.server_url }}/${{ github.repository }}
-  dotnetVersion: '9'
+  dotnetVersion: '10'
 
 jobs:
   build_winx64:
@@ -17,10 +17,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.dotnetVersion }}.x
 
@@ -31,7 +31,7 @@ jobs:
         run: Get-ChildItem ./x64/VSLauncher.exe | Rename-Item -NewName {$_.basename + "_x64" + $_.extension }
 
       - name: Publish Build Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: win-x64
           path: "./x64"
@@ -41,10 +41,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: ${{ env.dotnetVersion }}.x
 
@@ -55,7 +55,7 @@ jobs:
         run: Get-ChildItem ./x86/VSLauncher.exe | Rename-Item -NewName {$_.basename + "_x86" + $_.extension }
 
       - name: Publish Build Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: win-x86
           path: "./x86"
@@ -66,7 +66,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
 
       - name: Tag release
         id: tag_release

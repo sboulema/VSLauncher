@@ -8,11 +8,26 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using VSLauncher.Models;
 
-var directoryArgument = new Argument<string>("directory", "Directory in which to open solution/project/directory.");
-var versionOption = new Option<string?>(["--vs-version", "-v"], "The version of Visual Studio to launch.");
-var prereleaseOption = new Option<bool>(["--prerelease", "-p"], "The release channel of Visual Studio to launch.");
-var interactiveOption = new Option<bool>(["--interactive", "-i"], "Interactively choose which version of Visual Studio to launch.");
-var recursiveOption = new Option<bool>(["--recursive", "-r"], "Recursively search for a solution or project in the given directory and its children.");
+var directoryArgument = new Argument<string>("directory")
+{
+    Description = "Directory in which to open solution/project/directory.",
+};
+var versionOption = new Option<string?>("--vs-version", "-v")
+{
+	Description = "The version of Visual Studio to launch.",
+};
+var prereleaseOption = new Option<bool>("--prerelease", "-p")
+{
+	Description = "The release channel of Visual Studio to launch.",
+};
+var interactiveOption = new Option<bool>("--interactive", "-i")
+{
+	Description = "Interactively choose which version of Visual Studio to launch.",
+};
+var recursiveOption = new Option<bool>("--recursive", "-r")
+{
+	Description = "Recursively search for a solution or project in the given directory and its children.",
+};
 
 var rootCommand = new RootCommand("Visual Studio Launcher")
 {
@@ -23,14 +38,20 @@ var rootCommand = new RootCommand("Visual Studio Launcher")
 	recursiveOption
 };
 
-rootCommand.SetHandler(LaunchVisualStudio,
-	directoryArgument,
-	versionOption,
-	prereleaseOption,
-	interactiveOption,
-	recursiveOption);
+rootCommand.SetAction(parseResult =>
+{
+	var directory = parseResult.GetValue(directoryArgument);
+    var vsVersion = parseResult.GetValue(versionOption);
+    var prerelease = parseResult.GetValue(prereleaseOption);
+    var interactive = parseResult.GetValue(interactiveOption);
+    var recursive = parseResult.GetValue(recursiveOption);
 
-return await rootCommand.InvokeAsync(args);
+    LaunchVisualStudio(directory!, vsVersion, prerelease, interactive, recursive);
+    return 0;
+});
+
+var parseResult = rootCommand.Parse(args);
+return parseResult.Invoke();
 
 static void LaunchVisualStudio(string directory, string? vsVersion,
 	bool prerelease, bool interactive, bool recursive)
@@ -112,7 +133,8 @@ static string GetVisualStudioPath(string? vsVersion, bool prerelease, bool inter
 		"2017" => "-version [15,16)",
 		"2019" => "-version [16,17)",
 		"2022" => "-version [17,18)",
-		_ => "-latest"
+        "2026" => "-version [18,19)",
+        _ => "-latest"
 	};
 
 	var arguments = $"{(prerelease ? "-prerelease": string.Empty)} {versionArgument} -property productPath";
